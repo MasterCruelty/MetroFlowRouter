@@ -8,8 +8,6 @@
 [![image](https://img.shields.io/github/issues/MasterCruelty/MetroFlowRouter)](https://github.com/MasterCruelty/MetroFlowRouter/issues)
 ![image](https://img.shields.io/github/languages/top/MasterCruelty/MetroFlowRouter)
 ![image](https://img.shields.io/github/commit-activity/w/MasterCruelty/MetroFlowRouter)
-![Image](https://badgen.net/github/release/MasterCruelty/MetroFlowRouter?label=Latest%20release)
-![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/MasterCruelty/MetroFlowRouter/latest?color=44CC11&style=flat-square)
 ![image](https://img.shields.io/github/contributors/MasterCruelty/MetroFlowRouter)
 
 # MetroFlowRouter
