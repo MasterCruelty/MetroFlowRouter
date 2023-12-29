@@ -1,4 +1,5 @@
-Linea 1: Loreto; Lima; Venezia; Palestro; San Babila; Duomo; Cordusio; Cairoli; Cadorna; Conciliazione
-Linea 2: Sant'Ambrogio; Cadorna; Lanza; Moscova; Garibaldi; Gioia; Centrale; Caiazzo; Loreto; Piola
+Linea 1: Sesto 1° Maggio FS; Sesto Rondò; Sesto Marelli; Villa S. Giovanni; Precotto; Gorla; Turro; Rovereto; Pasteur; Loreto; Lima; Venezia; Palestro; San Babila; Duomo; Cordusio; Cairoli; Cadorna; Conciliazione; Pagano; Buonarroti; Amendola; Lotto; Qt8; Lampugnano; Uruguay; Bonola; S. Leonardo; Molino Dorino; Pero; Rho Fiera Milano
+Linea 2: Sant'Ambrogio; Cadorna; Lanza; Moscova; Garibaldi; Gioia; Centrale; Caiazzo; Loreto; Piola; Lambrate FS; Udine; Cimiano; Crescenzago; Cascina Gobba; Cascina Gobba-ramo1 (next: Cologno Sud, Cologno Centro, Cologno Nord; prev:); Cascina Gobba-ramo2 (next: Vimodrone,Gessate; prev:)
 Linea 3: Zara; Sondrio; Centrale; Repubblica; Turati; Montenapoleone; Duomo
+Linea 4: 
 Linea 5: Istria; Marche; Zara; Isola; Garibaldi; Monumentale; Cenisio; Gerusalemme
