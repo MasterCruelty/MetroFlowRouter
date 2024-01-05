@@ -35,6 +35,8 @@ type stazione struct{
 	nome string
 	linea int
 	interscambio bool
+        ramo_sx []*stazione 
+        ramo_dx []*stazione
 }
 
 type rete struct{
@@ -76,11 +78,39 @@ func leggiDati() rete{
 		numLinea,_ := strconv.Atoi(strings.TrimPrefix(stazioniLinea[0], "Linea "))
 		stazioni := strings.Split(stazioniLinea[1],"; ")
 		//Create a slice containing all the stations sorted
-		for _,v := range stazioni{
-			stazione := &stazione{nome: v,linea: numLinea}
-			staz = append(staz,*stazione)
-			metro.linee[numLinea] = append(metro.linee[numLinea],stazione)
+                ///////////////////////////////////////////////////////////////////////
+                var ramoAttuale []*stazione
+		for _, v := range stazioni {
+			// Verifico se la stazione contiene una virgola
+			if strings.Contains(v, ",") {
+				stazioniRami := strings.Split(v, ",")
+                                interscambio := &staz[len(staz)-1]
+				for _, bifurcationStazione := range stazioniRami {
+					stazione := &stazione{nome: bifurcationStazione, linea: numLinea}
+					staz = append(staz, *stazione)
+					metro.linee[numLinea] = append(metro.linee[numLinea], stazione)
+
+					// Aggiorno il ramo attuale con la nuova stazione
+					ramoAttuale = append(ramoAttuale, stazione)
+                                }
+                                if  interscambio.ramo_sx == nil{
+                                    interscambio.ramo_sx = ramoAttuale
+                                    interscambio.interscambio = true
+                                }else{
+                                    interscambio.ramo_dx = ramoAttuale
+                                    interscambio.interscambio = true
+                                }
+                                ramoAttuale = []*stazione{}
+			} else {
+				stazione := &stazione{nome: v, linea: numLinea}
+				staz = append(staz, *stazione)
+				metro.linee[numLinea] = append(metro.linee[numLinea], stazione)
+
+				// Aggiorno il ramo attuale con la nuova stazione
+				ramoAttuale = append(ramoAttuale, stazione)
+			}
 		}
+                ////////////////////////////////////////////////////////////////////////////////////
 	}
 	//I look for changing stations and I manage the adjacency between them.
 	//For example Cadorna on line 1 is adjacent to Cadorna on line 2
@@ -98,7 +128,17 @@ func leggiDati() rete{
 	}
 	//I fill the adjacent slice
 	for i, stazione := range staz{
-		if i > 0 && stazione.linea == staz[i-1].linea {
+            ////////////////////////////////////////////////////////////////////////
+                if len(stazione.ramo_sx) > 1{
+                    metro.adj[stazione.nome] = append(metro.adj[stazione.nome],stazione.ramo_sx[0])
+                    metro.adj[stazione.ramo_sx[0].nome] = append(metro.adj[stazione.ramo_sx[0].nome],&staz[i])
+                }
+                if len(stazione.ramo_dx) > 1{
+                    metro.adj[stazione.nome] = append(metro.adj[stazione.nome],stazione.ramo_dx[0])
+                    metro.adj[stazione.ramo_dx[0].nome] = append(metro.adj[stazione.ramo_dx[0].nome],&staz[i])
+                }
+                ///////////////////////////////////////////////////////////////////////////////
+		if i > 0 && stazione.linea == staz[i-1].linea{
 			metro.adj[stazione.nome] = append(metro.adj[stazione.nome],&staz[i-1])
 		}
 		if i < len(staz)-1 && stazione.linea == staz[i+1].linea{
@@ -135,6 +175,7 @@ func stazioniVicine(metro rete, s string) []string{
 	}
 	return result
 }
+
 
 /*
  * Returns the slice containing the names of interchange stations.
@@ -226,37 +267,68 @@ func tempo(metro rete, partenza string, arrivo string) ([]string,int) {
 }
 
 //main di test per le funzioni
-func main(){
+func main() {
 	metro := leggiDati()
 
-	fmt.Println("Which station you wanna know the adjacent stations?")
-	stazione := ""
-	fmt.Scan(&stazione)
-	vicine:= stazioniVicine(metro,stazione)
-	fmt.Println(vicine)
+	for {
+		fmt.Println("\nMenu:")
+		fmt.Println("1) Adjacent stations (type 2 stations to check if they're adjacent)")
+		fmt.Println("2) Show all the stations of a line")
+		fmt.Println("3) Show all changing stations")
+		fmt.Println("4) Check if two stations are on the same line")
+		fmt.Println("5) Find minimum path and time between two stations")
+		fmt.Println("6) Exit")
 
-	fmt.Println("Which line you wanna know all the stations?")
-	line := 0
-	fmt.Scan(&line)
-	stazioni := linea(metro,line)
-	for i := 0;i< len(stazioni);i++{
-		fmt.Println(stazioni[i].nome)
+		var choice int
+		fmt.Print("Enter your choice (1-6): ")
+		fmt.Scan(&choice)
+
+		switch choice {
+		case 1:
+			fmt.Println("Which station you wanna know if they are adjacent?")
+			stazione := ""
+			fmt.Scan(&stazione)
+			vicine := stazioniVicine(metro, stazione)
+			fmt.Println(vicine)
+
+		case 2:
+			fmt.Println("Which line you wanna know all the stations?")
+			var line int
+			fmt.Scan(&line)
+			stazioni := linea(metro, line)
+			for i := 0; i < len(stazioni); i++ {
+				fmt.Println(stazioni[i].nome)
+			}
+
+		case 3:
+			fmt.Println("\nAll the changing stations:")
+			interscambi := interscambio(metro)
+			fmt.Println(interscambi)
+
+		case 4:
+			fmt.Println("Which stations you wanna check if they are on the same line?")
+			var s1, s2 string
+			fmt.Scan(&s1, &s2)
+			ok := stessaLinea(metro, s1, s2)
+			fmt.Println(ok)
+
+		case 5:
+			fmt.Println("Starting point and destination:")
+			var s1, s2 string
+			fmt.Scan(&s1, &s2)
+			fmt.Println()
+			percorso, time := tempo(metro, s1, s2)
+			fmt.Println("Minimum path: " + strconv.Itoa(time))
+			fmt.Println("Route to be covered: ")
+			fmt.Println(percorso)
+
+		case 6:
+			fmt.Println("Exiting the program.")
+			return
+
+		default:
+			fmt.Println("Invalid choice. Please enter a number between 1 and 6.")
+		}
 	}
-	fmt.Println("\nAll the changing stations:")
-	interscambi := interscambio(metro)
-	fmt.Println(interscambi)
-	fmt.Println()
-	fmt.Println("Which stations you wanna check if they are on the same line?")
-	s1,s2 := "",""
-	fmt.Scan(&s1,&s2)
-	ok := stessaLinea(metro,s1,s2)
-	fmt.Println(ok)
-	fmt.Println("Starting point and destinazion:")
-	s1,s2 = "",""
-	fmt.Scan(&s1,&s2)
-	fmt.Println()
-	percorso,time := tempo(metro,s1,s2)
-	fmt.Println("Minimum path: " + strconv.Itoa(time))
-	fmt.Println("Route to be covered: ")
-	fmt.Println(percorso)
 }
+
