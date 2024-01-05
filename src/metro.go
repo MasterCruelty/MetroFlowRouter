@@ -35,6 +35,8 @@ type stazione struct{
 	nome string
 	linea int
 	interscambio bool
+        ramo_sx []*stazione 
+        ramo_dx []*stazione
 }
 
 type rete struct{
@@ -76,11 +78,39 @@ func leggiDati() rete{
 		numLinea,_ := strconv.Atoi(strings.TrimPrefix(stazioniLinea[0], "Linea "))
 		stazioni := strings.Split(stazioniLinea[1],"; ")
 		//Create a slice containing all the stations sorted
-		for _,v := range stazioni{
-			stazione := &stazione{nome: v,linea: numLinea}
-			staz = append(staz,*stazione)
-			metro.linee[numLinea] = append(metro.linee[numLinea],stazione)
+                ///////////////////////////////////////////////////////////////////////
+                var ramoAttuale []*stazione
+		for _, v := range stazioni {
+			// Verifico se la stazione contiene una virgola
+			if strings.Contains(v, ",") {
+				stazioniRami := strings.Split(v, ",")
+                                interscambio := &staz[len(staz)-1]
+				for _, bifurcationStazione := range stazioniRami {
+					stazione := &stazione{nome: bifurcationStazione, linea: numLinea}
+					staz = append(staz, *stazione)
+					metro.linee[numLinea] = append(metro.linee[numLinea], stazione)
+
+					// Aggiorno il ramo attuale con la nuova stazione
+					ramoAttuale = append(ramoAttuale, stazione)
+                                }
+                                if  interscambio.ramo_sx == nil{
+                                    interscambio.ramo_sx = ramoAttuale
+                                    interscambio.interscambio = true
+                                }else{
+                                    interscambio.ramo_dx = ramoAttuale
+                                    interscambio.interscambio = true
+                                }
+                                ramoAttuale = []*stazione{}
+			} else {
+				stazione := &stazione{nome: v, linea: numLinea}
+				staz = append(staz, *stazione)
+				metro.linee[numLinea] = append(metro.linee[numLinea], stazione)
+
+				// Aggiorno il ramo attuale con la nuova stazione
+				ramoAttuale = append(ramoAttuale, stazione)
+			}
 		}
+                ////////////////////////////////////////////////////////////////////////////////////
 	}
 	//I look for changing stations and I manage the adjacency between them.
 	//For example Cadorna on line 1 is adjacent to Cadorna on line 2
@@ -98,7 +128,17 @@ func leggiDati() rete{
 	}
 	//I fill the adjacent slice
 	for i, stazione := range staz{
-		if i > 0 && stazione.linea == staz[i-1].linea {
+            ////////////////////////////////////////////////////////////////////////
+                if len(stazione.ramo_sx) > 1{
+                    metro.adj[stazione.nome] = append(metro.adj[stazione.nome],stazione.ramo_sx[0])
+                    metro.adj[stazione.ramo_sx[0].nome] = append(metro.adj[stazione.ramo_sx[0].nome],&staz[i])
+                }
+                if len(stazione.ramo_dx) > 1{
+                    metro.adj[stazione.nome] = append(metro.adj[stazione.nome],stazione.ramo_dx[0])
+                    metro.adj[stazione.ramo_dx[0].nome] = append(metro.adj[stazione.ramo_dx[0].nome],&staz[i])
+                }
+                ///////////////////////////////////////////////////////////////////////////////
+		if i > 0 && stazione.linea == staz[i-1].linea{
 			metro.adj[stazione.nome] = append(metro.adj[stazione.nome],&staz[i-1])
 		}
 		if i < len(staz)-1 && stazione.linea == staz[i+1].linea{
@@ -135,6 +175,7 @@ func stazioniVicine(metro rete, s string) []string{
 	}
 	return result
 }
+
 
 /*
  * Returns the slice containing the names of interchange stations.
