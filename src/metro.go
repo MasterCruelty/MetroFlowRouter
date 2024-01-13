@@ -35,6 +35,7 @@ type stazione struct{
 	nome string
 	linea int
 	interscambio bool
+        capolineaBiforcazione bool
 }
 
 type rete struct{
@@ -75,12 +76,32 @@ func leggiDati() rete{
 		stazioniLinea := strings.Split(linea,": ")
 		numLinea,_ := strconv.Atoi(strings.TrimPrefix(stazioniLinea[0], "Linea "))
 		stazioni := strings.Split(stazioniLinea[1],"; ")
+                var indexCapolinea int
 		//Create a slice containing all the stations sorted
-		for _,v := range stazioni{
+                indexCapolinea = 0
+		for k,v := range stazioni{
 			stazione := &stazione{nome: v,linea: numLinea}
+                        //look for bifurcations stations
+                        for i := k; i < len(stazioni); i++ {
+                            for j := i + 1; j < len(stazioni); j++ {
+                                if stazioni[i] == stazioni[j] {
+                                    //keep in memory the index of the end of a branch
+                                    indexCapolinea = len(staz) + (j-i) -1 
+                                    break
+                                }
+                            }
+                            if indexCapolinea != 0{
+                                break
+                            }
+                        }
 			staz = append(staz,*stazione)
 			metro.linee[numLinea] = append(metro.linee[numLinea],stazione)
 		}
+                //I set the end of a branch to avoid wrong adj
+                if indexCapolinea != 0{
+                    staz[indexCapolinea].capolineaBiforcazione = true
+                    fmt.Println(staz[indexCapolinea].nome)
+                }
 	}
 	//I look for changing stations and I manage the adjacency between them.
 	//For example Cadorna on line 1 is adjacent to Cadorna on line 2
@@ -98,10 +119,10 @@ func leggiDati() rete{
 	}
 	//I fill the adjacent slice
 	for i, stazione := range staz{
-		if i > 0 && stazione.linea == staz[i-1].linea {
+		if i > 0 && stazione.linea == staz[i-1].linea && staz[i-1].capolineaBiforcazione == false{
 			metro.adj[stazione.nome] = append(metro.adj[stazione.nome],&staz[i-1])
 		}
-		if i < len(staz)-1 && stazione.linea == staz[i+1].linea{
+		if i < len(staz)-1 && stazione.linea == staz[i+1].linea && staz[i].capolineaBiforcazione == false{
 			metro.adj[stazione.nome] = append(metro.adj[stazione.nome],&staz[i+1])
 		}
 	}
