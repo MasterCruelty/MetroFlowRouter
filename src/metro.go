@@ -87,6 +87,7 @@ func leggiDati() rete{
                                 if stazioni[i] == stazioni[j] {
                                     //keep in memory the index of the end of a branch
                                     indexCapolinea = len(staz) + (j-i) -1 
+                                    fmt.Println(stazioni[i])
                                     break
                                 }
                             }
