@@ -101,7 +101,7 @@ func leggiDati() rete{
                 //I set the end of a branch to avoid wrong adj
                 if indexCapolinea != 0{
                     staz[indexCapolinea].capolineaBiforcazione = true
-                    fmt.Println(staz[indexCapolinea].nome)
+                    //fmt.Println(staz[indexCapolinea].nome)
                 }
 	}
 	//I look for changing stations and I manage the adjacency between them.
@@ -168,7 +168,7 @@ func stazioniVicine(metro rete, s string) []string{
 */
 
 func interscambio(metro rete) []string{
-	trovatoScambio := make(map[string]bool)
+    trovatoScambio := make(map[string]bool)
     interscambi := make([]string, 0)
 
     for _, stazioni := range metro.adj {
@@ -225,20 +225,20 @@ func tempo(metro rete, partenza string, arrivo string) ([]string,int) {
         for i := 0; i < livello; i++ {
             partenza := coda[0]
             coda = coda[1:]
-			//fmt.Println("Sto visitando i vicini di: " + partenza)
+            //fmt.Println("Sto visitando i vicini di: " + partenza)
             for _, vicino := range metro.adj[partenza] {
                 if !aux[vicino.nome] {
                     if vicino.nome == arrivo {
-						percorso[vicino.nome] = append(percorso[partenza],vicino.nome)
-						return percorso[vicino.nome], result + 1
+        		percorso[vicino.nome] = append(percorso[partenza],vicino.nome)
+			return percorso[vicino.nome], result + 1
                     }
                     coda = append(coda, vicino.nome)
                     aux[vicino.nome] = true
-					//To avoid loss of information in the case we have more than one near station not visited
-					//I create distint copies of the path for each near station not visited and I updated them separately
-					nuovoPercorso := make([]string,len(percorso[partenza]))
-					copy(nuovoPercorso,percorso[partenza])
-					percorso[vicino.nome] = append(nuovoPercorso,vicino.nome)
+                    //To avoid loss of information in the case we have more than one near station not visited
+                    //I create distint copies of the path for each near station not visited and I updated them separately
+                    nuovoPercorso := make([]string,len(percorso[partenza]))
+                    copy(nuovoPercorso,percorso[partenza])
+                    percorso[vicino.nome] = append(nuovoPercorso,vicino.nome)
                 }
             }
         }

@@ -1,5 +1,5 @@
 Linea 1: Sesto_1°_Maggio FS; Sesto_Rondò; Sesto_Marelli; Villa_S._Giovanni; Precotto; Gorla; Turro; Rovereto; Pasteur; Loreto; Lima; Venezia; Palestro; San_Babila; Duomo; Cordusio; Cairoli; Cadorna; Conciliazione; Pagano; Buonarroti; Amendola; Lotto; Qt8; Lampugnano; Uruguay; Bonola; S._Leonardo; Molino_Dorino; Pero; Rho_Fiera_Milano; Pagano; Wagner; De_Angeli; Gambara; Bande_Nere; Primaticcio; Inganni; Bisceglie
 Linea 2: Assago_Forum; Assago_Nord; Famagosta; Romolo; Porta_Genova; Sant'Agostino; Sant'Ambrogio; Cadorna; Lanza; Moscova; Garibaldi; Gioia; Centrale; Caiazzo; Loreto; Piola; Lambrate_FS; Udine; Cimiano; Crescenzago; Cascina_Gobba; Cologno_Sud; Cologno_Centro; Cologno_Nord; Cascina_Gobba; Vimodrone; Gessate
 Linea 3: Comasina; Affori_FN; Affori_Centro; Dergano; Maciachini; Zara; Sondrio; Centrale; Repubblica; Turati; Montenapoleone; Duomo; Missori; Crocetta; Porta_Romana; Lodi_TIBB; Brenta; Corvetto; Porto_di_mare; Rogoredo; San_Donato
-Linea 4: San_Babila; Tricolore; Dateo; Susa; Argonne; Forlanini; Repetti; Linate 
+Linea 4: San_Babila; Tricolore; Dateo; Susa; Argonne; Forlanini; Repetti; Linate
 Linea 5: Istria; Marche; Zara; Isola; Garibaldi; Monumentale; Cenisio; Gerusalemme
