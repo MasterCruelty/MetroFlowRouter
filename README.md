@@ -22,6 +22,14 @@ You can use it for every city you want. The only thing you have to do is fill co
 build metro.go
 ./metro Milan.txt
 ```
+![image](https://github.com/MasterCruelty/MetroFlowRouter/assets/72561502/325612cf-8681-4c93-b765-54bdec61c65d)
+![image](https://github.com/MasterCruelty/MetroFlowRouter/assets/72561502/cc1f225b-1f31-4883-9147-22a3f7e42c87)
+![image](https://github.com/MasterCruelty/MetroFlowRouter/assets/72561502/6b12f9c5-857a-4986-b3f8-408e16bf323c)
+![image](https://github.com/MasterCruelty/MetroFlowRouter/assets/72561502/0444addd-6629-48b6-958a-7b1507c2e43e)
+
+
+
+
 
 ### Contribute
 Feel free to contribute and improve the project. You can read the guidelines to contribute [here](https://github.com/MasterCruelty/MetroFlowRouter/blob/main/CONTRIBUTING.md)
