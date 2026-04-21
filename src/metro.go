@@ -76,33 +76,39 @@ func leggiDati() rete{
 		stazioniLinea := strings.Split(linea,": ")
 		numLinea,_ := strconv.Atoi(strings.TrimPrefix(stazioniLinea[0], "Linea "))
 		stazioni := strings.Split(stazioniLinea[1],"; ")
-                var indexCapolinea int
+
+		// Find ALL bifurcation branch terminals BEFORE appending stations.
+		// A bifurcation exists when a junction station appears twice in the sequence:
+		//   [..., junction, branch_terminal, junction, ...]
+		// The branch terminal is the station immediately before the second occurrence (at j-1).
+		// Using startIdx (the current length of staz) lets us compute absolute indices
+		// correctly regardless of how many bifurcations the line has.
+		startIdx := len(staz)
+		var capolineaIndici []int
+		for i := 0; i < len(stazioni); i++ {
+			for j := i + 1; j < len(stazioni); j++ {
+				if stazioni[i] == stazioni[j] {
+					// stazioni[j-1] is the dead-end terminal of this branch.
+					// Its absolute position in staz will be startIdx + (j-1).
+					capolineaIndici = append(capolineaIndici, startIdx+j-1)
+					break // found the pair for stazioni[i], move on to i+1
+				}
+			}
+		}
+
 		//Create a slice containing all the stations sorted
-                indexCapolinea = 0
-		for k,v := range stazioni{
+		for _,v := range stazioni{
 			stazione := &stazione{nome: v,linea: numLinea}
-                        //look for bifurcations stations
-                        for i := k; i < len(stazioni); i++ {
-                            for j := i + 1; j < len(stazioni); j++ {
-                                if stazioni[i] == stazioni[j] {
-                                    //keep in memory the index of the end of a branch
-                                    indexCapolinea = len(staz) + (j-i) -1 
-                                    //fmt.Println(stazioni[i])
-                                    break
-                                }
-                            }
-                            if indexCapolinea != 0{
-                                break
-                            }
-                        }
 			staz = append(staz,*stazione)
 			metro.linee[numLinea] = append(metro.linee[numLinea],stazione)
 		}
-                //I set the end of a branch to avoid wrong adj
-                if indexCapolinea != 0{
-                    staz[indexCapolinea].capolineaBiforcazione = true
-                    //fmt.Println(staz[indexCapolinea].nome)
-                }
+
+		// Mark ALL branch terminals so that adjacency is not built across bifurcations.
+		// The original code used a single integer and only marked the last bifurcation found;
+		// now we mark every one.
+		for _, idx := range capolineaIndici {
+			staz[idx].capolineaBiforcazione = true
+		}
 	}
 	//I look for changing stations and I manage the adjacency between them.
 	//For example Cadorna on line 1 is adjacent to Cadorna on line 2
